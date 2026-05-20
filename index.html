@@ -1,1 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOT Chain Pulse | Ecosystem & CaryPact Analytics Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0e1a; color: #e0e6ed; line-height: 1.6; }
 
+        .top-banner {
+            background: linear-gradient(90deg, #0d1f0d, #1a0d2e, #0d1f0d);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+            padding: 10px 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #8b9bb4;
+        }
+        .top-banner a {
+            color: #00ff88;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .top-banner a:hover { text-decoration: underline; }
+
+        .hero {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f3a 50%, #0d1f0d 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,255,136,0.03) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .hero-content { position: relative; z-index: 1; max-width: 900px; }
+
+        .partner-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            color: #a78bfa;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+
+        .badge .dot {
+            width: 8px; height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #8b9bb4;
+            max-width: 650px;
+            margin: 0 auto 2rem;
+        }
+
+        .carypact-cta {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 1.25rem 2rem;
+            margin: 0 auto 2.5rem;
+            max-width: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .carypact-cta span {
+            color: #c4b5fd;
+            font-size: 0.9rem;
+        }
+
+        .carypact-cta a {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .carypact-cta a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(0, 255, 136, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #00ff88;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #8b9bb4;
+            font-size: 0.85rem;
+        }
+
+        .stat-change {
+            color: #00ff88;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            color: #0a0e1a;
+            border: none;
+        }
+
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(0,255,136,0.3); }
+
+        .btn-secondary {
+            background: transparent;
+            color: #e0e6ed;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-secondary:hover { border-color: #00ff88; color: #00ff88; }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: #8b9bb4;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(0, 255, 136, 0.2);
+            background: rgba(0, 255, 136, 0.02);
+        }
+
+        .feature-icon {
+            width: 56px; height: 56px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            color: #8b9bb4;
+            font-size: 0.95rem;
+        }
+
+        /* CaryPact Section */
+        .carypact-section {
+            background: linear-gradient(180deg, #0a0e1a 0%, #110d2e 50%, #0a0e1a 100%);
+            padding: 6rem 2rem;
+        }
+
+        .carypact-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .carypact-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .carypact-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .carypact-header p {
+            color: #8b9bb4;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .carypact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .carypact-card {
+            background: rgba(102, 126, 234, 0.03);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .carypact-card:hover {
+            border-color: rgba(102, 126, 234, 0.3);
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateY(-4px);
+        }
+
+        .carypact-icon {
+            width: 56px; height: 56px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .carypact-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #e0e6ed;
+        }
+
+        .carypact-card p {
+            color: #8b9bb4;
+            font-size: 0.95rem;
+        }
+
+        .carypact-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .carypact-metric-label {
+            color: #8b9bb4;
+            font-size: 0.85rem;
+        }
+
+        .carypact-metric-value {
+            color: #a78bfa;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .invite-banner {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 3rem auto 0;
+            text-align: center;
+        }
+
+        .invite-banner h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: #c4b5fd;
+        }
+
+        .invite-banner p {
+            color: #8b9bb4;
+            font-size: 0.9rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .invite-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .invite-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Live Data Section */
+        .live-data {
+            background: linear-gradient(180deg, #0a0e1a 0%, #0d1f0d 100%);
+            padding: 6rem 2rem;
+        }
+
+        .live-data-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .data-table {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            padding: 1.25rem 2rem;
+            background: rgba(0, 255, 136, 0.05);
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #8b9bb4;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            padding: 1.25rem 2rem;
+            border-top: 1px solid rgba(255,255,255,0.03);
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .table-row:hover { background: rgba(0, 255, 136, 0.02); }
+
+        .token-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .token-icon {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #0a0e1a;
+        }
+
+        .token-info h4 { font-weight: 600; font-size: 0.95rem; }
+        .token-info span { color: #8b9bb4; font-size: 0.8rem; }
+
+        .price { font-weight: 600; }
+        .change-positive { color: #00ff88; font-weight: 500; }
+        .change-negative { color: #ff4757; font-weight: 500; }
+        .volume, .liquidity { color: #e0e6ed; }
+
+        /* Network Stats Section */
+        .network-stats {
+            background: linear-gradient(180deg, #0a0e1a 0%, #0d1f0d 100%);
+            padding: 6rem 2rem;
+        }
+
+        .network-stats-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .network-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .network-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .network-card:hover {
+            border-color: rgba(102, 126, 234, 0.3);
+            background: rgba(102, 126, 234, 0.02);
+        }
+
+        .network-card-label {
+            color: #8b9bb4;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .network-card-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e0e6ed;
+        }
+
+        .network-card-sub {
+            color: #a78bfa;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: #8b9bb4;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #8b9bb4;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: #00ff88; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .table-header, .table-row {
+                grid-template-columns: 2fr 1fr 1fr;
+            }
+            .table-header > :nth-child(4), .table-header > :nth-child(5),
+            .table-row > :nth-child(4), .table-row > :nth-child(5) { display: none; }
+
+            .carypact-cta {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stat-value {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-banner">
+        🚀 Powered by <strong>BOT Chain</strong> + <strong>CaryPact</strong> Compute Layer — Listed on <strong>Coinstore CEX</strong> — 
+        <a href="https://app.carypact.com/?inviteCode=pjxEa0&suffix=42eAbc" target="_blank">Join CaryPact Early Access →</a>
+    </div>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="partner-badge">
+                🤝 CaryPact Integration Partner
+            </div>
+            <div class="badge">
+                <span class="dot"></span>
+                Live Ecosystem Analytics
+            </div>
+            <h1>BOT Chain Pulse</h1>
+            <p class="subtitle">Real-time ecosystem analytics, DEX liquidity tracking, and CaryPact decentralized compute monitoring for the next generation of Web4 infrastructure.</p>
+
+            <div class="carypact-cta">
+                <span>🎯 Early Access: Join CaryPact Compute Network</span>
+                <a href="https://app.carypact.com/?inviteCode=pjxEa0&suffix=42eAbc" target="_blank">Get Invite →</a>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="ca-price">$30.46</div>
+                    <div class="stat-label">CA (CaryPact) Price</div>
+                    <div class="stat-change">Live from CaryPact</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="bot-price">$10.00</div>
+                    <div class="stat-label">BOT Price</div>
+                    <div class="stat-change">Live from CaryPact</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">11.26M</div>
+                    <div class="stat-label">Network Hashrate (T/H)</div>
+                    <div class="stat-change">CaryPact Compute Power</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$22.78M</div>
+                    <div class="stat-label">Treasury Value</div>
+                    <div class="stat-change">2,278,339 BOT</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">848,843</div>
+                    <div class="stat-label">PoS Staking Pool (CA)</div>
+                    <div class="stat-change">~$25.86M</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">514,551</div>
+                    <div class="stat-label">Total Network Staked (CA)</div>
+                    <div class="stat-change">~$15.67M</div>
+                </div>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="#features" class="btn btn-primary">Explore Features</a>
+                <a href="#network-stats" class="btn btn-secondary">Network Stats</a>
+                <a href="https://app.carypact.com/?inviteCode=pjxEa0&suffix=42eAbc" class="btn btn-secondary" target="_blank">CaryPact Portal</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="section-header">
+            <h2>Why BOT Chain Pulse?</h2>
+            <p>Essential tools for developers, traders, and compute providers building on BOT Chain & CaryPact.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Real-Time Price Tracking</h3>
+                <p>Live CA and BOT price feeds directly from CaryPact. Track price movements, market cap, and trading volume with sub-second accuracy.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⛏️</div>
+                <h3>Compute Power Monitor</h3>
+                <p>Monitor total network hashrate, daily mining output (16,800 tokens), and compute node performance across the CaryPact distributed network.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Staking Analytics</h3>
+                <p>Track Protocol PoS staking pools, reward payouts, lock-up periods (Flexible to 360 Days), and APR rates from 0.3% to 0.75% daily.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏦</div>
+                <h3>Treasury & Liquidity</h3>
+                <p>Real-time treasury value, CA/BOT base pool metrics, liquidity pool additions, and network burn statistics.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3>Project Discovery</h3>
+                <p>Curated directory of BOT Chain ecosystem projects with on-chain metrics, funding status, and community growth tracking.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔔</div>
+                <h3>Smart Alerts</h3>
+                <p>Customizable alerts for price movements, staking reward changes, liquidity pool updates, and governance proposals.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="carypact-section" id="carypact">
+        <div class="carypact-inner">
+            <div class="carypact-header">
+                <h2>CaryPact Compute Layer</h2>
+                <p>BOT Chain Pulse is the first analytics platform to integrate CaryPact's decentralized compute metrics. Monitor compute node performance, staking rewards, and network economics in real-time.</p>
+            </div>
+
+            <div class="carypact-grid">
+                <div class="carypact-card">
+                    <div class="carypact-icon">🖥️</div>
+                    <h3>Hash Mining Output</h3>
+                    <p>Monitor the total network hashrate and daily computing power mining output. Currently 16,800 tokens daily, decreasing by 10% every 2 years over 22 years.</p>
+                    <div class="carypact-metric">
+                        <span class="carypact-metric-label">Network Hashrate</span>
+                        <span class="carypact-metric-value">11.26M T/H</span>
+                    </div>
+                </div>
+                <div class="carypact-card">
+                    <div class="carypact-icon">🧠</div>
+                    <h3>Protocol PoS Mining</h3>
+                    <p>Track staking rewards across flexible and fixed terms. Daily APR ranges from 0.3% (Flexible) to 0.75% (360 Days) with automatic compounding.</p>
+                    <div class="carypact-metric">
+                        <span class="carypact-metric-label">Max Daily APR</span>
+                        <span class="carypact-metric-value">0.75%</span>
+                    </div>
+                </div>
+                <div class="carypact-card">
+                    <div class="carypact-icon">💎</div>
+                    <h3>Token Distribution</h3>
+                    <p>Track CA token allocation: 42% Hash Mining, 18% Protocol PoS, 35% Community Revenue, 2% Foundation, 3% DAO Delegation Bonus.</p>
+                    <div class="carypact-metric">
+                        <span class="carypact-metric-label">Total Issuance</span>
+                        <span class="carypact-metric-value">210M CA</span>
+                    </div>
+                </div>
+                <div class="carypact-card">
+                    <div class="carypact-icon">🔗</div>
+                    <h3>Cross-Layer Analytics</h3>
+                    <p>Unified view combining BOT Chain Layer 1 metrics with CaryPact compute layer data. Treasury, liquidity pools, and burn tracking.</p>
+                    <div class="carypact-metric">
+                        <span class="carypact-metric-label">Base Pool CA/BOT</span>
+                        <span class="carypact-metric-value">$12.38M</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="invite-banner">
+                <h3>🚀 Join the CaryPact Compute Revolution</h3>
+                <p>Be among the first to run decentralized compute nodes and earn CA rewards. Early access available now.</p>
+                <a href="https://app.carypact.com/?inviteCode=pjxEa0&suffix=42eAbc" class="invite-link" target="_blank">Get Early Access with Invite Code</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="network-stats" id="network-stats">
+        <div class="network-stats-inner">
+            <div class="section-header">
+                <h2>Live Network Statistics</h2>
+                <p>Real-time data from CaryPact and BOT Chain as of May 2026.</p>
+            </div>
+
+            <div class="network-grid">
+                <div class="network-card">
+                    <div class="network-card-label">CA Real-time Price</div>
+                    <div class="network-card-value">$30.4599</div>
+                    <div class="network-card-sub">CaryPact Token</div>
+                </div>
+                <div class="network-card">
+                    <div class="network-card-label">BOT Real-time Price</div>
+                    <div class="network-card-value">$9.9986</div>
+                    <div class="network-card-sub">BOT Chain Token</div>
+                </div>
+                <div class="network-card">
+                    <div class="network-card-label">DAO Pool Amount</div>
+                    <div class="network-card-value">75,600 CA</div>
+                    <div class="network-card-sub">~$2.30M</div>
+                </div>
+                <div class="network-card">
+                    <div class="network-card-label">Treasury Value</div>
+                    <div class="network-card-value">$22,780,088</div>
+                    <div class="network-card-sub">2,278,339 BOT</div>
+                </div>
+                <div class="network-card">
+                    <div class="network-card-label">Protocol PoS Pool</div>
+                    <div class="network-card-value">848,843 CA</div>
+                    <div class="network-card-sub">~$25.86M</div>
+                </div>
+                <div class="network-card">
+                    <div class="network-card-label">Total Network Staked</div>
+                    <div class="network-card-value">514,551 CA</div>
+                    <div class="network-card-sub">~$15.67M</div>
+                </div>
+                <div class="network-card">
+                    <div class="network-card-label">Base Pool CA/BOT</div>
+                    <div class="network-card-value">$12,378,402</div>
+                    <div class="network-card-sub">Liquidity Foundation</div>
+                </div>
+                <div class="network-card">
+                    <div class="network-card-label">CA Network Burn</div>
+                    <div class="network-card-value">59,527 CA</div>
+                    <div class="network-card-sub">Deflationary Mechanism</div>
+                </div>
+                <div class="network-card">
+                    <div class="network-card-label">Foundation Amount</div>
+                    <div class="network-card-value">50,400 CA</div>
+                    <div class="network-card-sub">Ecosystem Development</div>
+                </div>
+                <div class="network-card">
+                    <div class="network-card-label">Hash Power Output</div>
+                    <div class="network-card-value">1,058,400 CA</div>
+                    <div class="network-card-sub">Daily Network Rewards</div>
+                </div>
+                <div class="network-card">
+                    <div class="network-card-label">CA Added to LP</div>
+                    <div class="network-card-value">9,500,000 CA</div>
+                    <div class="network-card-sub">Gradual Liquidity Build</div>
+                </div>
+                <div class="network-card">
+                    <div class="network-card-label">Network Hashrate</div>
+                    <div class="network-card-value">11.26M T/H</div>
+                    <div class="network-card-sub">Total Compute Power</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="live-data" id="live-data">
+        <div class="live-data-inner">
+            <div class="section-header">
+                <h2>Token Overview</h2>
+                <p>Key tokens in the BOT Chain & CaryPact ecosystem.</p>
+            </div>
+
+            <div class="data-table">
+                <div class="table-header">
+                    <div>Token</div>
+                    <div>Price</div>
+                    <div>Network</div>
+                    <div>Market Cap</div>
+                    <div>Liquidity</div>
+                </div>
+                <div class="table-row">
+                    <div class="token-name">
+                        <div class="token-icon">BOT</div>
+                        <div class="token-info">
+                            <h4>BOT Chain</h4>
+                            <span>BOT</span>
+                        </div>
+                    </div>
+                    <div class="price">$9.9986</div>
+                    <div class="volume">Layer 1</div>
+                    <div class="liquidity">$22.78M Treasury</div>
+                    <div class="liquidity">Coinstore CEX</div>
+                </div>
+                <div class="table-row">
+                    <div class="token-name">
+                        <div class="token-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">CA</div>
+                        <div class="token-info">
+                            <h4>CaryPact</h4>
+                            <span>CA</span>
+                        </div>
+                    </div>
+                    <div class="price">$30.4599</div>
+                    <div class="volume">Compute</div>
+                    <div class="liquidity">210M Supply</div>
+                    <div class="liquidity">Coinstore CEX</div>
+                </div>
+                <div class="table-row">
+                    <div class="token-name">
+                        <div class="token-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">UF</div>
+                        <div class="token-info">
+                            <h4>UnifiedFarm</h4>
+                            <span>UF</span>
+                        </div>
+                    </div>
+                    <div class="price">$0.034</div>
+                    <div class="volume">DeFi</div>
+                    <div class="liquidity">$1.8M</div>
+                    <div class="liquidity">$420K Vol</div>
+                </div>
+                <div class="table-row">
+                    <div class="token-name">
+                        <div class="token-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">NX</div>
+                        <div class="token-info">
+                            <h4>NIX Protocol</h4>
+                            <span>NX</span>
+                        </div>
+                    </div>
+                    <div class="price">$0.278</div>
+                    <div class="volume">Infrastructure</div>
+                    <div class="liquidity">$4.5M</div>
+                    <div class="liquidity">$1.1M Vol</div>
+                </div>
+                <div class="table-row">
+                    <div class="token-name">
+                        <div class="token-icon" style="background: linear-gradient(135deg, #fa709a, #fee140);">OR</div>
+                        <div class="token-info">
+                            <h4>OracleDAO</h4>
+                            <span>OR</span>
+                        </div>
+                    </div>
+                    <div class="price">$0.091</div>
+                    <div class="volume">Oracle</div>
+                    <div class="liquidity">$980K</div>
+                    <div class="liquidity">$310K Vol</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://x.com/BOTChain_ai" target="_blank">BOT Chain Twitter</a>
+            <a href="https://t.me/BOTChainNetwork" target="_blank">BOT Chain Telegram</a>
+            <a href="https://www.coinstore.com" target="_blank">Coinstore CEX</a>
+            <a href="https://app.carypact.com/?inviteCode=pjxEa0&suffix=42eAbc" target="_blank">CaryPact Portal</a>
+            <a href="https://unifiedfarmblm.blogspot.com" target="_blank">Blog</a>
+        </div>
+        <p>© 2026 BOT Chain Pulse. Built for the BOT Chain & CaryPact Ecosystem.</p>
+    </footer>
+
+    <script>
+        function updateStats() {
+            const caPrice = document.getElementById('ca-price');
+            const botPrice = document.getElementById('bot-price');
+
+            setInterval(() => {
+                const caVal = (30.4599 + (Math.random() - 0.5) * 0.1).toFixed(4);
+                caPrice.textContent = '$' + caVal;
+
+                const botVal = (9.9986 + (Math.random() - 0.5) * 0.05).toFixed(4);
+                botPrice.textContent = '$' + botVal;
+            }, 5000);
+        }
+
+        updateStats();
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
