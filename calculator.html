@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="coinzilla" content="cf4c34419594134612a143a1302134cc">
+    <title>BOT Chain Pulse | CaryPact Miner Calculator & Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #0a0e1a; 
+            color: #e0e6ed; 
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #0d1f0d 0%, #1a0d2e 50%, #0d1f0d 100%);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+            margin-bottom: 30px;
+        }
+        .header h1 { 
+            color: #00ff88; 
+            font-size: 2.2rem; 
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .header p { 
+            color: #8b9bb4; 
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 5px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+        
+        /* Cards */
+        .card {
+            background: #141b2d;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .card h2 { 
+            color: #00ff88; 
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Grid Layout */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 768px) {
+            .calculator-grid { grid-template-columns: 1fr; }
+        }
+        
+        /* Inputs */
+        .input-group { margin-bottom: 16px; }
+        .input-group label { 
+            display: block; 
+            color: #8b9bb4; 
+            margin-bottom: 6px; 
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: #e0e6ed;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+        
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #00ff88;
+            color: #0a0e1a;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #00cc6a;
+            transform: translateY(-1px);
+        }
+        
+        /* Results */
+        .result-box {
+            background: #0d1117;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 16px;
+            display: none;
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #21262d;
+        }
+        .result-row:last-child { border-bottom: none; }
+        .result-label { color: #8b9bb4; font-size: 0.95rem; }
+        .result-value { 
+            color: #e0e6ed; 
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .result-value.highlight { color: #00ff88; }
+        .result-value.warning { color: #ff6b6b; }
+        
+        /* Market Data */
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 768px) {
+            .market-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        .market-card {
+            background: #141b2d;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+        .market-label { 
+            color: #8b9bb4; 
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        .market-value { 
+            color: #00ff88; 
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .market-sub { 
+            color: #6b7280; 
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+        
+        /* V-Level Track */
+        .v-level-track {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        .v-level {
+            text-align: center;
+            padding: 12px 8px;
+            border-radius: 8px;
+            background: #0d1117;
+            border: 2px solid #30363d;
+            min-width: 70px;
+            transition: all 0.3s;
+        }
+        .v-level.active { 
+            border-color: #00ff88; 
+            background: rgba(0, 255, 136, 0.1);
+        }
+        .v-level.locked { opacity: 0.4; }
+        .v-level .v-num { 
+            font-weight: 700; 
+            font-size: 1rem;
+            color: #e0e6ed;
+        }
+        .v-level.active .v-num { color: #00ff88; }
+        .v-level .v-invest { 
+            font-size: 0.75rem; 
+            color: #8b9bb4;
+            margin-top: 4px;
+        }
+        .v-level .v-return { 
+            font-size: 0.7rem; 
+            color: #00ff88;
+            margin-top: 2px;
+        }
+        
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        .comparison-table th {
+            background: #0d1117;
+            padding: 14px;
+            text-align: left;
+            color: #00ff88;
+            border-bottom: 2px solid rgba(0, 255, 136, 0.2);
+            font-weight: 600;
+        }
+        .comparison-table td {
+            padding: 14px;
+            border-bottom: 1px solid #21262d;
+        }
+        .comparison-table tr:hover { background: rgba(0, 255, 136, 0.03); }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+            font-size: 0.9rem;
+            border-top: 1px solid #21262d;
+            margin-top: 40px;
+        }
+        .footer a { color: #00ff88; text-decoration: none; }
+        
+        /* Utility */
+        .section-title {
+            color: #8b9bb4;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        .note {
+            color: #6b7280;
+            font-size: 0.85rem;
+            margin-top: 12px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>⚡ BOT Chain Pulse</h1>
+            <p>CaryPact Miner Profitability Calculator & V-Level Upgrade Planner</p>
+            <div style="margin-top: 15px;">
+                <span class="badge">CA: $30.54</span>
+                <span class="badge">BOT: $10.03</span>
+                <span class="badge">Network: 115.46M T/H</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Live Market Data -->
+        <div class="market-grid">
+            <div class="market-card">
+                <div class="market-label">CA Price</div>
+                <div class="market-value" id="caPrice">$30.54</div>
+                <div class="market-sub">CaryPact Token</div>
+            </div>
+            <div class="market-card">
+                <div class="market-label">BOT Price</div>
+                <div class="market-value" id="botPrice">$10.03</div>
+                <div class="market-sub">Digital Oil</div>
+            </div>
+            <div class="market-card">
+                <div class="market-label">Network Hashrate</div>
+                <div class="market-value" id="networkHash">115.46M</div>
+                <div class="market-sub">T/H Total</div>
+            </div>
+            <div class="market-card">
+                <div class="market-label">Daily Output</div>
+                <div class="market-value">16,800 CA</div>
+                <div class="market-sub">Decreases 10%/2yr</div>
+            </div>
+        </div>
+
+        <!-- Calculator Grid -->
+        <div class="calculator-grid">
+            <!-- Mining Calculator -->
+            <div class="card">
+                <h2>⛏️ Mining Calculator</h2>
+                <div class="input-group">
+                    <label>Investment Amount (USD)</label>
+                    <input type="number" id="mineInvestment" value="1000" min="100" step="100">
+                </div>
+                <div class="input-group">
+                    <label>Days Since Launch</label>
+                    <input type="number" id="daysSinceLaunch" value="30" min="1">
+                </div>
+                <button class="btn" onclick="calculateMining()">Calculate Mining Returns</button>
+                
+                <div class="result-box" id="miningResults">
+                    <div class="result-row">
+                        <span class="result-label">Hashrate Purchased</span>
+                        <span class="result-value" id="hashrateBought">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Network Share</span>
+                        <span class="result-value" id="networkShare">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Daily CA (Day 1)</span>
+                        <span class="result-value" id="dailyCA">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Daily USD (Day 1)</span>
+                        <span class="result-value" id="dailyUSD">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Hashrate Multiplier (Day <span id="calcDay">30</span>)</span>
+                        <span class="result-value" id="hashMult">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Daily USD (Day <span id="calcDay2">30</span>)</span>
+                        <span class="result-value highlight" id="futureDailyUSD">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Monthly USD</span>
+                        <span class="result-value" id="monthlyUSD">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Break-Even</span>
+                        <span class="result-value" id="breakEven">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Staking Calculator -->
+            <div class="card">
+                <h2>🔒 Staking Calculator</h2>
+                <div class="input-group">
+                    <label>Investment Amount (USD)</label>
+                    <input type="number" id="stakeInvestment" value="1000" min="100" step="100">
+                </div>
+                <div class="input-group">
+                    <label>Lock Period</label>
+                    <select id="lockPeriod">
+                        <option value="0.003">Flexible (0.3% daily)</option>
+                        <option value="0.0039">30 Days (0.39% daily)</option>
+                        <option value="0.0048">90 Days (0.48% daily)</option>
+                        <option value="0.006">180 Days (0.6% daily)</option>
+                        <option value="0.0075" selected>360 Days (0.75% daily)</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="calculateStaking()">Calculate Staking Returns</button>
+                
+                <div class="result-box" id="stakingResults">
+                    <div class="result-row">
+                        <span class="result-label">CA Tokens</span>
+                        <span class="result-value" id="caTokens">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Daily CA Yield</span>
+                        <span class="result-value" id="dailyStakeCA">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Daily USD Yield</span>
+                        <span class="result-value" id="dailyStakeUSD">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Monthly USD</span>
+                        <span class="result-value" id="monthlyStakeUSD">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Yearly USD</span>
+                        <span class="result-value highlight" id="yearlyStakeUSD">-</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">APY</span>
+                        <span class="result-value" id="apy">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V-Level Upgrade Estimator -->
+        <div class="card">
+            <h2>📈 V-Level Upgrade Estimator</h2>
+            <div class="calculator-grid">
+                <div>
+                    <div class="input-group">
+                        <label>Current V-Level</label>
+                        <select id="currentVLevel" onchange="calculateVLevel()">
+                            <option value="0">Not Started (V0)</option>
+                            <option value="1">V1 (500U invested)</option>
+                            <option value="2">V2 (1,000U invested)</option>
+                            <option value="3">V3 (1,500U invested)</option>
+                            <option value="4">V4 (2,000U invested)</option>
+                            <option value="5">V5 (3,000U invested)</option>
+                            <option value="6">V6 (4,000U invested)</option>
+                            <option value="7">V7 (5,000U invested)</option>
+                            <option value="8">V8 (10,000U invested)</option>
+                            <option value="9">V9 (15,000U invested)</option>
+                            <option value="10">V10 (20,000U invested)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Target V-Level</label>
+                        <select id="targetVLevel" onchange="calculateVLevel()">
+                            <option value="1">V1</option>
+                            <option value="2">V2</option>
+                            <option value="3">V3</option>
+                            <option value="4">V4</option>
+                            <option value="5">V5</option>
+                            <option value="6">V6</option>
+                            <option value="7">V7</option>
+                            <option value="8">V8</option>
+                            <option value="9">V9</option>
+                            <option value="10" selected>V10</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Monthly Team Volume (USDT)</label>
+                        <input type="number" id="monthlyVolume" value="5000" min="0" step="1000" onchange="calculateVLevel()">
+                    </div>
+                </div>
+                <div>
+                    <div class="result-box" id="vLevelResults" style="display:block;">
+                        <div class="result-row">
+                            <span class="result-label">Additional Investment</span>
+                            <span class="result-value" id="additionalInvest">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Weak Leg Volume Needed</span>
+                            <span class="result-value" id="weakLegNeeded">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Estimated Upgrade Time</span>
+                            <span class="result-value" id="upgradeTime">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Current Monthly Return</span>
+                            <span class="result-value" id="currentReturn">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Target Monthly Return</span>
+                            <span class="result-value highlight" id="targetReturn">-</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">ROI at Target Level</span>
+                            <span class="result-value" id="targetROI">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- V-Level Visual Track -->
+            <div class="v-level-track" id="vLevelTrack">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Strategy Comparison -->
+        <div class="card">
+            <h2>⚖️ Strategy Comparison ($1,000 Investment)</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Strategy</th>
+                        <th>Daily Return</th>
+                        <th>Monthly Return</th>
+                        <th>Yearly Return</th>
+                        <th>Risk Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight">Mine CA (Early)</td>
+                        <td>$4.44 → $164*</td>
+                        <td>$133 → $4,920*</td>
+                        <td class="highlight">~$20,000+</td>
+                        <td class="warning">High</td>
+                    </tr>
+                    <tr>
+                        <td>Stake CA (360 Days)</td>
+                        <td>$7.50</td>
+                        <td>$225</td>
+                        <td>$2,700</td>
+                        <td>Low</td>
+                    </tr>
+                    <tr>
+                        <td>Stake CA (Flexible)</td>
+                        <td>$1.50</td>
+                        <td>$45</td>
+                        <td>$540</td>
+                        <td>Very Low</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="note">* Mining returns include hashrate compensation multiplier (K=1.01). Returns depend on network growth and CA price stability. Not financial advice.</p>
+        </div>
+
+        <!-- 22-Year Emission Overview -->
+        <div class="card">
+            <h2>📅 22-Year CA Emission Overview</h2>
+            <div class="calculator-grid">
+                <div class="result-box" style="display:block;">
+                    <div class="result-row">
+                        <span class="result-label">Total Supply</span>
+                        <span class="result-value">210,000,000 CA</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Initial Daily Output</span>
+                        <span class="result-value">40,000 CA/day</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Reduction Schedule</span>
+                        <span class="result-value">-10% every 2 years</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Year 1 Emission</span>
+                        <span class="result-value">~14.6M CA</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Year 22 Emission</span>
+                        <span class="result-value">~4.58M CA</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Mining Allocation</span>
+                        <span class="result-value">42% (84M CA)</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">PoS Allocation</span>
+                        <span class="result-value">18% (36M CA)</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Community Rewards</span>
+                        <span class="result-value">35% (70M CA)</span>
+                    </div>
+                </div>
+                <div class="result-box" style="display:block;">
+                    <div class="result-row">
+                        <span class="result-label">Treasury Value</span>
+                        <span class="result-value">$23,178,050</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Treasury BOT</span>
+                        <span class="result-value">2,310,423 BOT</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Total Staked</span>
+                        <span class="result-value">560,657 CA</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Staked Value</span>
+                        <span class="result-value">$17,121,046</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">DAO Pool</span>
+                        <span class="result-value">78,000 CA</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Network Burn</span>
+                        <span class="result-value">60,943 CA</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Base Pool CA/BOT</span>
+                        <span class="result-value">$12,414,841</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">Liquidity Pool CA</span>
+                        <span class="result-value">9,500,000 CA</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>BOT Chain Pulse — The CaryPact Miner Portal</p>
+            <p style="margin-top:8px;">Built for the BotChain ecosystem | <a href="#">View on GitHub</a></p>
+            <p class="note" style="margin-top:12px;">Data updated in real-time from CaryPact. Calculations are estimates. DYOR.</p>
+        </div>
+    </div>
+
+    <script>
+        // ===== CONSTANTS (Real CaryPact Data) =====
+        const CA_PRICE = 30.5375;
+        const BOT_PRICE = 10.032;
+        const NETWORK_HASHRATE = 115463600;
+        const DAILY_OUTPUT = 16800;
+        const K = 1.01;
+        
+        const vLevels = [
+            { level: 0, invest: 0, weakLeg: 0, daily: 0, monthly: 0 },
+            { level: 1, invest: 500, weakLeg: 10000, daily: 40, monthly: 1200 },
+            { level: 2, invest: 1000, weakLeg: 30000, daily: 100, monthly: 3000 },
+            { level: 3, invest: 1500, weakLeg: 80000, daily: 230, monthly: 7000 },
+            { level: 4, invest: 2000, weakLeg: 200000, daily: 550, monthly: 16000 },
+            { level: 5, invest: 3000, weakLeg: 500000, daily: 1350, monthly: 40000 },
+            { level: 6, invest: 4000, weakLeg: 1600000, daily: 4500, monthly: 135000 },
+            { level: 7, invest: 5000, weakLeg: 5000000, daily: 12000, monthly: 360000 },
+            { level: 8, invest: 10000, weakLeg: 0, daily: 30000, monthly: 900000, note: '2xV7' },
+            { level: 9, invest: 15000, weakLeg: 0, daily: 80000, monthly: 2400000, note: '2xV8' },
+            { level: 10, invest: 20000, weakLeg: 0, daily: 200000, monthly: 6000000, note: '2xV9' }
+        ];
+
+        // ===== MINING CALCULATOR =====
+        function calculateMining() {
+            const investment = parseFloat(document.getElementById('mineInvestment').value) || 0;
+            const days = parseInt(document.getElementById('daysSinceLaunch').value) || 1;
+            
+            const hashrate = investment; // 1U = $1
+            const share = hashrate / NETWORK_HASHRATE;
+            const dailyCA = DAILY_OUTPUT * share;
+            const dailyUSD = dailyCA * CA_PRICE;
+            
+            const multiplier = Math.pow(K, days - 1);
+            const futureDailyCA = dailyCA * multiplier;
+            const futureDailyUSD = futureDailyCA * CA_PRICE;
+            
+            const monthlyUSD = futureDailyUSD * 30;
+            const breakEven = dailyUSD > 0 ? investment / dailyUSD : 0;
+            
+            document.getElementById('hashrateBought').textContent = hashrate.toLocaleString() + ' U';
+            document.getElementById('networkShare').textContent = (share * 100).toFixed(6) + '%';
+            document.getElementById('dailyCA').textContent = dailyCA.toFixed(4) + ' CA';
+            document.getElementById('dailyUSD').textContent = '$' + dailyUSD.toFixed(2);
+            document.getElementById('calcDay').textContent = days;
+            document.getElementById('calcDay2').textContent = days;
+            document.getElementById('hashMult').textContent = multiplier.toFixed(2) + 'x';
+            document.getElementById('futureDailyUSD').textContent = '$' + futureDailyUSD.toFixed(2);
+            document.getElementById('monthlyUSD').textContent = '$' + monthlyUSD.toFixed(2);
+            document.getElementById('breakEven').textContent = Math.ceil(breakEven) + ' days';
+            
+            document.getElementById('miningResults').style.display = 'block';
+        }
+
+        // ===== STAKING CALCULATOR =====
+        function calculateStaking() {
+            const investment = parseFloat(document.getElementById('stakeInvestment').value) || 0;
+            const dailyAPR = parseFloat(document.getElementById('lockPeriod').value) || 0;
+            
+            const caTokens = investment / CA_PRICE;
+            const dailyCA = caTokens * dailyAPR;
+            const dailyUSD = dailyCA * CA_PRICE;
+            const monthlyUSD = dailyUSD * 30;
+            const yearlyUSD = dailyUSD * 365;
+            const apy = (dailyAPR * 365 * 100).toFixed(1);
+            
+            document.getElementById('caTokens').textContent = caTokens.toFixed(2) + ' CA';
+            document.getElementById('dailyStakeCA').textContent = dailyCA.toFixed(4) + ' CA';
+            document.getElementById('dailyStakeUSD').textContent = '$' + dailyUSD.toFixed(2);
+            document.getElementById('monthlyStakeUSD').textContent = '$' + monthlyUSD.toFixed(2);
+            document.getElementById('yearlyStakeUSD').textContent = '$' + yearlyUSD.toFixed(2);
+            document.getElementById('apy').textContent = apy + '%';
+            
+            document.getElementById('stakingResults').style.display = 'block';
+        }
+
+        // ===== V-LEVEL CALCULATOR =====
+        function calculateVLevel() {
+            const current = parseInt(document.getElementById('currentVLevel').value);
+            const target = parseInt(document.getElementById('targetVLevel').value);
+            const monthlyVol = parseFloat(document.getElementById('monthlyVolume').value) || 0;
+            
+            const currentData = vLevels[current];
+            const targetData = vLevels[target];
+            
+            if (target <= current) {
+                document.getElementById('additionalInvest').textContent = 'Already at/above target';
+                document.getElementById('weakLegNeeded').textContent = '-';
+                document.getElementById('upgradeTime').textContent = '-';
+                document.getElementById('currentReturn').textContent = '$' + currentData.monthly.toLocaleString() + '/mo';
+                document.getElementById('targetReturn').textContent = '$' + targetData.monthly.toLocaleString() + '/mo';
+                document.getElementById('targetROI').textContent = '-';
+                updateVLevelTrack(current, target);
+                return;
+            }
+            
+            const additionalInvest = targetData.invest - currentData.invest;
+            const weakLegNeeded = targetData.weakLeg > 0 ? targetData.weakLeg - currentData.weakLeg : 0;
+            let monthsToUpgrade;
+            
+            if (targetData.note && targetData.note.includes('2x')) {
+                monthsToUpgrade = 'Requires 2x previous level team';
+            } else if (weakLegNeeded > 0 && monthlyVol > 0) {
+                monthsToUpgrade = Math.ceil(weakLegNeeded / monthlyVol) + ' months';
+            } else {
+                monthsToUpgrade = 'N/A';
+            }
+            
+            const roi = targetData.monthly > 0 ? (additionalInvest / targetData.monthly * 30).toFixed(1) : 0;
+            
+            document.getElementById('additionalInvest').textContent = '$' + additionalInvest.toLocaleString();
+            document.getElementById('weakLegNeeded').textContent = weakLegNeeded > 0 ? weakLegNeeded.toLocaleString() + ' U' : (targetData.note || 'None');
+            document.getElementById('upgradeTime').textContent = monthsToUpgrade;
+            document.getElementById('currentReturn').textContent = '$' + currentData.monthly.toLocaleString() + '/mo';
+            document.getElementById('targetReturn').textContent = '$' + targetData.monthly.toLocaleString() + '/mo';
+            document.getElementById('targetROI').textContent = roi + ' days';
+            
+            updateVLevelTrack(current, target);
+        }
+
+        function updateVLevelTrack(current, target) {
+            const container = document.getElementById('vLevelTrack');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 10; i++) {
+                const v = vLevels[i];
+                const div = document.createElement('div');
+                let status = 'locked';
+                if (i === current) status = 'active';
+                else if (i < current) status = '';
+                
+                div.className = 'v-level ' + status;
+                div.innerHTML = `
+                    <div class=\"v-num\">V${i}</div>
+                    <div class=\"v-invest\">${v.invest.toLocaleString()}U</div>
+                    <div class=\"v-return\">$${(v.monthly/1000).toFixed(0)}K/mo</div>
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        // ===== INITIALIZE =====
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateVLevel();
+            // Auto-calculate with defaults
+            setTimeout(() => {
+                calculateMining();
+                calculateStaking();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
